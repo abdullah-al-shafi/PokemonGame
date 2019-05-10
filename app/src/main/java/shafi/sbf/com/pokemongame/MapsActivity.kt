@@ -7,6 +7,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -37,7 +39,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Add a marker in Sydney and move the camera
         val dhaka = LatLng(23.772806, 90.354758)
-        mMap.addMarker(MarkerOptions().position(dhaka).title("Marker in Dhaka"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(dhaka))
+        mMap!!.addMarker(MarkerOptions()
+            .position(dhaka)
+            .title("Me")
+            .snippet("Here is my location")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.mario)))
+
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dhaka,18f))
     }
 }
