@@ -34,6 +34,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         checkPermition()
+        LoadPokemon()
     }
 
 var ACCESSLOCATION=123
@@ -117,18 +118,26 @@ var ACCESSLOCATION=123
 
     }
 
+    var oldLocation:Location?=null
     inner class myThread:Thread{
         constructor():super(){
-
+            oldLocation= Location("Start")
+            oldLocation!!.longitude=0.0
+            oldLocation!!.longitude=0.0
         }
 
         override fun run() {
             while (true){
                 try {
+                    if (oldLocation!!.distanceTo(loca)==0f){
+                        continue
+                    }
+                    oldLocation=loca
                     runOnUiThread {
                         mMap.clear()
+
+                        //show me
                     val dhaka = LatLng(loca!!.latitude, loca!!.longitude)
-                        Toast.makeText(this@MapsActivity,"lat:"+loca!!.latitude+"--long"+loca!!.longitude,Toast.LENGTH_LONG).show()
                     mMap.addMarker(
                         MarkerOptions()
                             .position(dhaka)
@@ -136,13 +145,53 @@ var ACCESSLOCATION=123
                             .snippet("Here is my location")
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.mario))
                     )
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dhaka, 20f))
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dhaka, 18f))
+
+                        //Show pokemon
+
+                        for (i in 0..listPokemon.size-1){
+                            var newPokemon=listPokemon[i]
+                            if (newPokemon.IsCatch==false){
+                                val pokemonLoc = LatLng(newPokemon.locationPo!!.latitude,newPokemon.locationPo!!.longitude)
+                                mMap.addMarker(
+                                    MarkerOptions()
+                                        .position(pokemonLoc)
+                                        .title(newPokemon.name!!)
+                                        .snippet(newPokemon.ads!!+" Power:"+newPokemon!!.power)
+                                        .icon(BitmapDescriptorFactory.fromResource(newPokemon.image!!)))
+
+                                if (loca!!.distanceTo(newPokemon.locationPo)<2){
+                                    newPokemon.IsCatch=true
+                                    listPokemon[i]=newPokemon
+                                    playerPower=newPokemon.power!!
+                                    Toast.makeText(this@MapsActivity,"You catch a new pokemon your new power is "+playerPower,
+                                        Toast.LENGTH_LONG).show()
+                                }
+
+                            }
+                        }
                 }
                     Thread.sleep(1000)
                 }catch (ex:Exception){}
             }
         }
     }
+var playerPower=0.0;
+    var listPokemon=ArrayList<Pokemon>()
+    fun LoadPokemon(){
+        listPokemon.add(Pokemon(R.drawable.charmander,"Charmander","Charmander live in Dhaka",55.0,23.7730072,90.3532024)
+        )
+        listPokemon.add(Pokemon(R.drawable.bulbasaur,"bulbasaur","Charmander live in Naogoan",90.5,23.7710805,90.3544127)
+        )
+        listPokemon.add(Pokemon(R.drawable.squirtle,"squirtle","Charmander live in Rajshahi",33.5,23.77241,90.3553929)
+        )
+        listPokemon.add(Pokemon(R.drawable.aaaa,"aaaa","Charmander live in Khulna",33.5,23.7506915,90.3771456)
+        )
+        listPokemon.add(Pokemon(R.drawable.bbb,"bbbb","Charmander live in Kustia",69.8,23.7506915,90.3771456)
+        )
+        listPokemon.add(Pokemon(R.drawable.ccc,"cccc","Charmander live in Meherpur",56.5,23.7506203,90.3788514)
+        )
 
+    }
 
 }
